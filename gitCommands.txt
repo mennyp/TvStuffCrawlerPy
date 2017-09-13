@@ -12,6 +12,13 @@ git commit -m "add all"
 git remote add origin https://github.com/mennyp/TvStuffCrawlerPy.git
 git push origin master
 
+git pull origin master
+
+chmod -R 777 /home/menny/TvStuffCrawlerPy
+
+
+
+
 
 
 

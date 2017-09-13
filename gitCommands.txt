@@ -1,0 +1,17 @@
+git init TvStuffCrawlerPy
+Initialized empty Git repository in /home/menny/TvStuffCrawlerPy/.git/
+
+cd TvStuffCrawlerPy
+git add .
+to add all files
+or
+git filename.xx
+
+git commit -m "add all"
+
+git remote add origin https://github.com/mennyp/TvStuffCrawlerPy.git
+git push origin master
+
+
+
+

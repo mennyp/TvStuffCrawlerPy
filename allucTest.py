@@ -5,6 +5,7 @@ import requests, json
 import mechanize, urllib2
 import time, elasticAlluc
 from selenium import webdriver
+import PTN
 
 def getSeleniumOpenloadLink(url):
     r = requests.get(url)
@@ -309,7 +310,9 @@ def getMp4FromAuroravidTo(url):
 
 
 def getAllucJsonData(from1, count, query):
-    r = requests.get("https://www.alluc.ee/api/search/stream/?apikey=ab1f790c52ad9d0bbdf099127dddca40&callback=?&count={0}&from={1}&query={2}&getmeta=1".format(count, from1, query))
+    apikeyList = ['20b18fc924b324347f5ecb1ae4324744', 'ab1f790c52ad9d0bbdf099127dddca40']
+    r = requests.get("https://www.alluc.ee/api/search/stream/?apikey={3}&callback=?&count={0}&from={1}&query={2}&getmeta=1".
+                     format(count, from1, query, apikeyList[0]))
     data = json.loads(r.content)['result']
     list = []
     for d in data:
@@ -376,16 +379,37 @@ def startCrawling(query):
             print ('finished', query, count)
             return
 #getMp4FromUptostream('http://uptostream.com/2fnr56j4i7x2')
-startCrawling('מדובב')
+#startCrawling('מדובב')
 #getMp4FromGorillavidIn('http://gorillavid.in/d314xvqt6sx8')
 #getMp4FromCloudtimeTo('http://www.cloudtime.to/video/acb8bbd33c602')
 #getMp4FromThevideoMe('https://thevideo.me/qigenn37gbxy')
 #getMp4FromMovpodIn('http://movpod.in/decvs2bk3d0q')
+import re, movieParser
+lines = [
+    '2.Fast.2.Furious.HebSub.DVDRiP.XViDHeBSuBTEliran G',
+'2012 Time for Change.2010.DVDRip.XviD.AC3-SKmbr.hebsub.moridim.me',
+'The+Delta+Force.1986.LiMiTED.DVDRip.HebSub.XviD'
+    #'The.Lion.King.1994.WS.DVDRip.XviD.HebDubbed-Gozlan.Horadot.Net_2.avi',
+     #    'Spiderman_1994_S01E02_HebDub_XviD.avi',
+      #   'Hamofa_Shel_LuLu_S01E01_HebDub_XviD',
+       #  'Planes.2013.BDRip.X264-HebDub-Eliran+Gozlan-_2',
+        #'Smurfs E131 PDTV HebDub XviD-Yonidan'] #, 'Movie', u'Smurfs E131'
+     ]
+blackList = ['eliran', 'gozlan', 'hebdubd', 'hebdubbed', 'hebdub']
+list = getAllucJsonData(0, 100, 'BluRay')
+for l in list:
+    # for b in blackList:
+    #     l = re.sub(b, '',l, flags=re.IGNORECASE)
+    #l = re.sub('__', '_', l)
 
-#'The.Lion.King.1994.WS.DVDRip.XviD.HebDubbed-Gozlan.Horadot.Net_2.avi', 'Spiderman_1994_S01E02_HebDub_XviD.avi' 'Hamofa_Shel_LuLu_S01E01_HebDub_XviD' 'Planes.2013.BDRip.X264-HebDub-Eliran+Gozlan-_2'
-#'Smurfs E131 PDTV HebDub XviD-Yonidan', 'Movie', u'Smurfs E131')
-# blackList = ['hebdub', 'eliran', 'gozlan', 'hebdubd', 'hebdubbed']
-# import PTN
+    info = movieParser.parse(l['title'])
+    if (info.__contains__('season') or info.__contains__('episode')):
+        info['type'] = 'tv'
+    else:
+        info['type'] = 'movie'
+    print (info['title'], l['title'], info)
+#
+print len(list)
 # lines = elasticAlluc.getAll(1000)
 # for l in lines:
 #     info = PTN.parse(l['title'])

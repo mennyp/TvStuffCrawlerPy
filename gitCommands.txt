@@ -16,6 +16,14 @@ git pull origin master
 
 chmod -R 777 /home/menny/TvStuffCrawlerPy
 
+git push https://mennyp:Zz123456@TvStuffCrawlerPy.git --all
+
+ pip install elasticsearch
+ pip install mechanize
+pip install clipboard
+pip install selenium
+pip install requests
+pip install parse-torrent-name
 
 
 

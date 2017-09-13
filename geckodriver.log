@@ -1,0 +1,79 @@
+1505056200258	geckodriver	INFO	geckodriver 0.18.0
+1505056200262	geckodriver	INFO	Listening on 127.0.0.1:43385
+1505056201383	geckodriver::marionette	INFO	Starting browser /usr/bin/firefox with args ["-marionette"]
+1505056206244	Marionette	INFO	Enabled via --marionette
+[fresh] [error] probe_ppp_module, can't find libpepflashplayer.so
+[fresh] [error] probe_ppp_module, can't find libpepflashplayer.so
+[fresh] [error] probe_ppp_module, can't find libpepflashplayer.so
+[fresh] [error] probe_ppp_module, can't find libpepflashplayer.so
+[fresh] [error] probe_ppp_module, can't find libpepflashplayer.so
+[fresh] [error] probe_ppp_module, can't find libpepflashplayer.so
+1505056213354	Marionette	INFO	Listening on port 39863
+JavaScript error: chrome://marionette/content/server.js, line 337: NS_ERROR_SOCKET_ADDRESS_IN_USE: Component returned failure code: 0x804b0036 (NS_ERROR_SOCKET_ADDRESS_IN_USE) [nsIServerSocket.initSpecialConnection]
+1505056213459	Marionette	WARN	TLS certificate errors will be ignored for this session
+1505056213509	Marionette	DEBUG	loaded listener.js
+1505056217669	Marionette	DEBUG	Received DOM event "beforeunload" for "about:blank"
+1505056218042	Marionette	DEBUG	Received DOM event "pagehide" for "about:blank"
+1505056218043	Marionette	DEBUG	Received DOM event "unload" for "about:blank"
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+1505056219218	Marionette	DEBUG	Received DOM event "DOMContentLoaded" for "https://openload.co/embed/ziH6tSE5ICo/"
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+1505056219300	Marionette	DEBUG	Received DOM event "pageshow" for "https://openload.co/embed/ziH6tSE5ICo/"
+1505056472919	Marionette	DEBUG	Received DOM event "beforeunload" for "https://openload.co/embed/ziH6tSE5ICo/"
+1505056473306	Marionette	DEBUG	Received DOM event "pagehide" for "https://openload.co/embed/ziH6tSE5ICo/"
+1505056473307	Marionette	DEBUG	Received DOM event "unload" for "https://openload.co/embed/ziH6tSE5ICo/"
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+TabSources.prototype._fetchSourceMap threw an exception: SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data
+Stack: SourceMapConsumer@resource://gre/modules/commonjs/toolkit/loader.js -> resource://devtools/shared/sourcemap/source-map.js:1281:20
+_fetchSourceMap/fetching<@resource://gre/modules/commonjs/toolkit/loader.js -> resource://devtools/server/actors/utils/TabSources.js:458:19
+process@resource://gre/modules/Promise.jsm -> resource://gre/modules/Promise-backend.js:922:23
+walkerLoop@resource://gre/modules/Promise.jsm -> resource://gre/modules/Promise-backend.js:806:7
+scheduleWalkerLoop/<@resource://gre/modules/Promise.jsm -> resource://gre/modules/Promise-backend.js:742:11
+Line: 1281, column: 20
+console.error: 
+  TabSources.prototype._fetchSourceMap threw an exception: SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data
+Stack: SourceMapConsumer@resource://gre/modules/commonjs/toolkit/loader.js -> resource://devtools/shared/sourcemap/source-map.js:1281:20
+_fetchSourceMap/fetching<@resource://gre/modules/commonjs/toolkit/loader.js -> resource://devtools/server/actors/utils/TabSources.js:458:19
+process@resource://gre/modules/Promise.jsm -> resource://gre/modules/Promise-backend.js:922:23
+walkerLoop@resource://gre/modules/Promise.jsm -> resource://gre/modules/Promise-backend.js:806:7
+scheduleWalkerLoop/<@resource://gre/modules/Promise.jsm -> resource://gre/modules/Promise-backend.js:742:11
+Line: 1281, column: 20
+1505056474361	Marionette	DEBUG	Received DOM event "DOMContentLoaded" for "https://openload.co/embed/ziH6tSE5ICo/"
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+1505056474802	Marionette	DEBUG	Received DOM event "pageshow" for "https://openload.co/embed/ziH6tSE5ICo/"

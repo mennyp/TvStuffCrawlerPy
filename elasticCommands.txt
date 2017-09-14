@@ -1,0 +1,10 @@
+curl -XPUT 'localhost:9200/alluc/_mapping/mp4?pretty' -H 'Content-Type: application/json' -d'
+{
+  "properties": {
+    "movie_info.title": {
+      "type":     "text",
+      "fielddata": true
+    }
+  }
+}
+'

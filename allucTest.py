@@ -5,7 +5,7 @@ import requests, json
 import mechanize, urllib2
 import time, elasticAlluc
 from selenium import webdriver
-import PTN
+import movieParser
 
 def getSeleniumOpenloadLink(url):
     r = requests.get(url)
@@ -310,9 +310,10 @@ def getMp4FromAuroravidTo(url):
 
 
 def getAllucJsonData(from1, count, query):
-    apikeyList = ['20b18fc924b324347f5ecb1ae4324744', 'ab1f790c52ad9d0bbdf099127dddca40']
+    apikeyList = ['20b18fc924b324347f5ecb1ae4324744', 'ab1f790c52ad9d0bbdf099127dddca40', '5598cb47eff0a0c43e32571be11c8faa']
     r = requests.get("https://www.alluc.ee/api/search/stream/?apikey={3}&callback=?&count={0}&from={1}&query={2}&getmeta=1".
-                     format(count, from1, query, apikeyList[0]))
+                     format(count, from1, query, apikeyList[2]))
+    print (query, from1, count)
     data = json.loads(r.content)['result']
     list = []
     for d in data:
@@ -329,7 +330,7 @@ def getAllucJsonData(from1, count, query):
 def startCrawling(query):
     print ('starting crawling', query)
     count = 0
-    for i in range(10, 1000):
+    for i in range(0, 1000):
         list = getAllucJsonData(i * 100, 100, query)
         for l in list:
             count += 1
@@ -379,42 +380,49 @@ def startCrawling(query):
             print ('finished', query, count)
             return
 #getMp4FromUptostream('http://uptostream.com/2fnr56j4i7x2')
-#startCrawling('מדובב')
+#startCrawling('תרגום')
 #getMp4FromGorillavidIn('http://gorillavid.in/d314xvqt6sx8')
 #getMp4FromCloudtimeTo('http://www.cloudtime.to/video/acb8bbd33c602')
 #getMp4FromThevideoMe('https://thevideo.me/qigenn37gbxy')
 #getMp4FromMovpodIn('http://movpod.in/decvs2bk3d0q')
-import re, movieParser
-lines = [
-    '2.Fast.2.Furious.HebSub.DVDRiP.XViDHeBSuBTEliran G',
-'2012 Time for Change.2010.DVDRip.XviD.AC3-SKmbr.hebsub.moridim.me',
-'The+Delta+Force.1986.LiMiTED.DVDRip.HebSub.XviD'
-    #'The.Lion.King.1994.WS.DVDRip.XviD.HebDubbed-Gozlan.Horadot.Net_2.avi',
-     #    'Spiderman_1994_S01E02_HebDub_XviD.avi',
-      #   'Hamofa_Shel_LuLu_S01E01_HebDub_XviD',
-       #  'Planes.2013.BDRip.X264-HebDub-Eliran+Gozlan-_2',
-        #'Smurfs E131 PDTV HebDub XviD-Yonidan'] #, 'Movie', u'Smurfs E131'
-     ]
-blackList = ['eliran', 'gozlan', 'hebdubd', 'hebdubbed', 'hebdub']
-list = getAllucJsonData(0, 100, 'BluRay')
-for l in list:
-    # for b in blackList:
-    #     l = re.sub(b, '',l, flags=re.IGNORECASE)
-    #l = re.sub('__', '_', l)
 
-    info = movieParser.parse(l['title'])
-    if (info.__contains__('season') or info.__contains__('episode')):
-        info['type'] = 'tv'
-    else:
-        info['type'] = 'movie'
-    print (info['title'], l['title'], info)
-#
-print len(list)
-# lines = elasticAlluc.getAll(1000)
-# for l in lines:
-#     info = PTN.parse(l['title'])
-#     if info.__contains__('season') and info.__contains__('episode'):
-#         info['type'] = 'TV'
-#     else:
-#         info['type'] = 'Movie'
-#     print(l['title'], info['type'], info['title'])
+# lines = [
+#     '2.Fast.2.Furious.HebSub.DVDRiP.XViDHeBSuBTEliran G',
+# '2012 Time for Change.2010.DVDRip.XviD.AC3-SKmbr.hebsub.moridim.me',
+# 'The+Delta+Force.1986.LiMiTED.DVDRip.HebSub.XviD'
+#      ]
+# blackList = ['eliran', 'gozlan', 'hebdubd', 'hebdubbed', 'hebdub']
+def addElasticMovieInfo(from1, size):
+    lines = elasticAlluc.searchWorkingMp4(from1, size)
+    for l in lines:
+        movieInfo = None
+        info = movieParser.parse(l['title'])
+        if (info.__contains__('season') or info.__contains__('episode')):
+            info['type'] = 'tv'
+        else:
+            info['type'] = 'movie'
+            year = None
+            if info.__contains__('year'):
+                year = info['year']
+            movieInfo = getMovieInfo(info['title'], year)
+        print (info['title'], l['title'])
+        elasticAlluc.add(l['filedataid'], file_info=info, movie_info=movieInfo)
+
+def getMovieInfo(title, year = None):
+    if len(title) < 2:
+        return None
+    url = 'https://api.themoviedb.org/3/search/movie?api_key=8a705e4ed4b896f02705746f96ec6e87&query={0}&language=he'.format(title)
+    res = requests.get(url)
+    for l in json.loads(res.content)['results']:
+        if year != None:
+            date = l['release_date']
+            if(len(date) > 3):
+                y = int(date.split('-')[0])
+                if(year == y):
+                    return l
+        else:
+            return l
+    return None
+
+addElasticMovieInfo(999, 5000)
+#startCrawling('תרגום')

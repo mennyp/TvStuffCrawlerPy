@@ -7,7 +7,8 @@ from datetime import datetime
 # clear index
 #curl -XDELETE 'http://localhost:9200/alluc/'
 
-def add(filedataid, mp4Link = None, title = None, sourceUrl = None, sourceTitle = None, hostName = None, query = None, isNoMp4 = None):
+def add(filedataid, mp4Link = None, title = None, sourceUrl = None, sourceTitle = None, hostName = None,
+        query = None, isNoMp4 = None, file_info = None, movie_info = None):
 
     doc = {
         'lastupdate': datetime.now(),
@@ -26,6 +27,10 @@ def add(filedataid, mp4Link = None, title = None, sourceUrl = None, sourceTitle 
         doc['query'] = query
     if isNoMp4 != None:
         doc['isNoMp4'] = isNoMp4
+    if file_info:
+        doc['file_info'] = file_info
+    if movie_info:
+        doc['movie_info'] = movie_info
 
     try:
         exist = es.exists(index="alluc", doc_type='mp4', id=filedataid)
@@ -36,7 +41,7 @@ def add(filedataid, mp4Link = None, title = None, sourceUrl = None, sourceTitle 
         else:
             doc['create'] = datetime.now()
             res = es.index(index="alluc", doc_type='mp4', id=filedataid, body=doc)
-            print ("elastic created", doc)
+            print ("elastic created")
 
         #print(res['elastic success'])
     except Exception, e:
@@ -160,6 +165,20 @@ def searchWorkingMp4(from1,  size):
     }
     return returnQuery(query)
 
+def searchMovie(from1,  size):
+    query = {
+        "query": {
+            "match" : {
+                "movie_info.video" : False
+            }
+        },
+        "from": from1,
+        "size": size,
+        "sort" : "movie_info.title"
+
+    }
+    return returnQuery(query)
+
 def getListWithSpeedNoDownloadStatus(size):
     query = {
         "query": {
@@ -202,6 +221,7 @@ def returnQuery(query):
     lines = []
     for hit in res['hits']['hits']:
         #print(hit['_id'], hit["_source"])
+        hit["_source"]['filedataid'] = hit["_id"]
         lines.append(hit["_source"])
     return lines
 
